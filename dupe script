@@ -1,0 +1,83 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "DupGui"
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 300, 0, 150)
+frame.Position = UDim2.new(0.5, -150, 0.5, -75)
+frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+
+frame.Active = true
+frame.Draggable = true
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -10, 0, 30)
+title.Position = UDim2.new(0, 5, 0, 5)
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 18
+title.Text = "Item Duper"
+title.Parent = frame
+
+local inputBox = Instance.new("TextBox")
+inputBox.Size = UDim2.new(0, 200, 0, 30)
+inputBox.Position = UDim2.new(0, 50, 0, 50)
+inputBox.PlaceholderText = "Itemname"
+inputBox.ClearTextOnFocus = false
+inputBox.Text = ""
+inputBox.Parent = frame
+
+local dupeButton = Instance.new("TextButton")
+dupeButton.Size = UDim2.new(0, 200, 0, 40)
+dupeButton.Position = UDim2.new(0, 50, 0, 90)
+dupeButton.Text = "Execute Dupe"
+dupeButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+dupeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+dupeButton.Font = Enum.Font.SourceSans
+dupeButton.TextSize = 16
+dupeButton.Parent = frame
+
+local status = Instance.new("TextLabel")
+status.Size = UDim2.new(1, -10, 0, 25)
+status.Position = UDim2.new(0, 5, 1, -30)
+status.BackgroundTransparency = 1
+status.TextColor3 = Color3.fromRGB(255, 255, 255)
+status.Text = ""
+status.Parent = frame
+
+dupeButton.MouseButton1Click:Connect(function()
+    local itemName = inputBox.Text
+    local backpack = player:FindFirstChild("Backpack")
+    local character = player.Character
+
+    local item = nil
+
+    if backpack then
+        item = backpack:FindFirstChild(itemName)
+    end
+
+    if not item and character then
+        item = character:FindFirstChild(itemName)
+    end
+
+    if not item then
+        status.Text = "Item Unsucessful: "..itemName
+        return
+    end
+
+    local clone = item:Clone()
+    
+    if backpack then
+        clone.Parent = backpack
+    elseif character then
+        clone.Parent = character
+    end
+
+    status.Text = "Item Dupe Sucess: "..clone.Name
+end)
