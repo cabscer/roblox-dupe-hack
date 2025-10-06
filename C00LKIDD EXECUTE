@@ -1,0 +1,107 @@
+local Players = game:GetService("Players")
+
+local plr = Players.LocalPlayer
+local gui = Instance.new("ScreenGui", plr:WaitForChild("PlayerGui"))
+gui.Name = "C00lKIDD EXECUTOR"
+gui.ResetOnSpawn = false
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 500, 0, 300)
+frame.Position = UDim2.new(0.5, -250, 0.5, -150)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BackgroundTransparency = 0.3
+frame.BorderSizePixel = 2
+frame.BorderColor3 = Color3.fromRGB(255, 0, 0)
+frame.Active = true
+frame.Draggable = true
+frame.Visible = true -- <== now always visible
+frame.Parent = gui
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "c00lkidd 2025"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 20
+title.TextXAlignment = Enum.TextXAlignment.Center
+title.Parent = frame
+
+local fillBtn = Instance.new("TextButton")
+fillBtn.Size = UDim2.new(0, 180, 0, 30)
+fillBtn.Position = UDim2.new(0, 10, 0, 35)
+fillBtn.Text = "Auto Username Fill"
+fillBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+fillBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+fillBtn.BorderColor3 = Color3.fromRGB(255, 0, 0)
+fillBtn.Font = Enum.Font.SourceSansBold
+fillBtn.TextScaled = true
+fillBtn.Parent = frame
+
+local box = Instance.new("TextBox")
+box.Size = UDim2.new(1, -20, 0, 170)
+box.Position = UDim2.new(0, 10, 0, 70)
+box.ClearTextOnFocus = false
+box.MultiLine = true
+box.TextWrapped = true
+box.TextXAlignment = Enum.TextXAlignment.Left
+box.TextYAlignment = Enum.TextYAlignment.Top
+box.Text = ""
+box.TextColor3 = Color3.fromRGB(255, 255, 255)
+box.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+box.BackgroundTransparency = 0.2
+box.BorderSizePixel = 0
+box.Font = Enum.Font.Code
+box.TextSize = 16
+box.ClipsDescendants = true
+box.Parent = frame
+
+local function createButton(text, posX, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 115, 0, 30)
+    btn.Position = UDim2.new(0, posX, 1, -40)
+    btn.Text = text
+    btn.TextScaled = true
+    btn.ClipsDescendants = true
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    btn.BorderColor3 = Color3.fromRGB(255, 0, 0)
+    btn.Font = Enum.Font.SourceSans
+    btn.Parent = frame
+    btn.MouseButton1Click:Connect(callback)
+end
+
+createButton("Execute", 10, function()
+    pcall(function()
+        loadstring(box.Text)()
+    end)
+end)
+
+createButton("Clear", 130, function()
+    box.Text = ""
+end)
+
+createButton("Reset Character", 250, function()
+    if plr.Character then
+        plr.Character:BreakJoints()
+    end
+end)
+
+createButton("Body Type Switch", 370, function()
+    local char = plr.Character
+    if char and char:FindFirstChild("Humanoid") then
+        char.Humanoid.RigType = char.Humanoid.RigType == Enum.HumanoidRigType.R15 and Enum.HumanoidRigType.R6 or Enum.HumanoidRigType.R15
+    end
+end)
+
+fillBtn.MouseButton1Click:Connect(function()
+    local currentText = box.Text
+    if string.find(currentText, "%b\"\"") then
+        box.Text = currentText:gsub("%b\"\"", '"' .. plr.Name .. '"', 1)
+    else
+        box.Text = '"' .. plr.Name .. '"'
+    end
+end)
+
+-- Removed UIS.InputBegan (no key toggle needed)
