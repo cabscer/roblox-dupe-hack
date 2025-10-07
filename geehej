@@ -1,0 +1,228 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "c00lkiddGui"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+-- Main Frame (Black background with red border)
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 300, 0, 400)
+mainFrame.Position = UDim2.new(1, -310, 1, 10) -- Bottom right, visible
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+
+-- Red border (using UIStroke)
+local borderStroke = Instance.new("UIStroke")
+borderStroke.Color = Color3.fromRGB(255, 0, 0) -- Red
+borderStroke.Thickness = 3
+borderStroke.Parent = mainFrame
+
+-- Title Label ("c00lgui" in bold white)
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "Title"
+titleLabel.Size = UDim2.new(1, 0, 0, 50)
+titleLabel.Position = UDim2.new(0, 0, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "c00lgui v3"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White
+titleLabel.TextScaled = true
+titleLabel.Font = Enum.Font.SourceSansBold
+titleLabel.Parent = mainFrame
+
+-- Navigation Frame for page buttons
+local navFrame = Instance.new("Frame")
+navFrame.Name = "NavFrame"
+navFrame.Size = UDim2.new(1, -10, 0, 40)
+navFrame.Position = UDim2.new(0, 5, 0, 55)
+navFrame.BackgroundTransparency = 1
+navFrame.Parent = mainFrame
+
+-- UIGridLayout for navigation buttons
+local navLayout = Instance.new("UIGridLayout")
+navLayout.CellSize = UDim2.new(0.5, -5, 0, 30)
+navLayout.CellPadding = UDim2.new(0, 5, 0, 5)
+navLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+navLayout.Parent = navFrame
+
+-- Page Frame for buttons
+local pageFrame = Instance.new("Frame")
+pageFrame.Name = "PageFrame"
+pageFrame.Size = UDim2.new(1, -10, 1, -105)
+pageFrame.Position = UDim2.new(0, 5, 0, 100)
+pageFrame.BackgroundTransparency = 1
+pageFrame.Parent = mainFrame
+
+-- Create page frames
+local trollPage = Instance.new("Frame")
+trollPage.Name = "TrollPage"
+trollPage.Size = UDim2.new(1, 0, 1, 0)
+trollPage.BackgroundTransparency = 1
+trollPage.Parent = pageFrame
+trollPage.Visible = true
+
+local destructionPage = Instance.new("Frame")
+destructionPage.Name = "DestructionPage"
+destructionPage.Size = UDim2.new(1, 0, 1, 0)
+destructionPage.BackgroundTransparency = 1
+destructionPage.Parent = pageFrame
+destructionPage.Visible = false
+
+-- UIListLayout for each page
+local trollLayout = Instance.new("UIListLayout")
+trollLayout.SortOrder = Enum.SortOrder.LayoutOrder
+trollLayout.Padding = UDim2.new(0, 5, 0, 5)
+trollLayout.Parent = trollPage
+
+local destructionLayout = Instance.new("UIListLayout")
+destructionLayout.SortOrder = Enum.SortOrder.LayoutOrder
+destructionLayout.Padding = UDim2.new(0, 5, 0, 5)
+destructionLayout.Parent = destructionPage
+
+-- Function to create a button
+local function createButton(text, parent, action)
+    local button = Instance.new("TextButton")
+    button.Name = text
+    button.Size = UDim2.new(1, -10, 0, 40)
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Dark gray
+    button.Text = text
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextScaled = true
+    button.Font = Enum.Font.SourceSans
+    button.BorderSizePixel = 0
+    
+    local hoverTween = TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 0, 0)})
+    local normalTween = TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)})
+    
+    button.MouseEnter:Connect(function()
+        hoverTween:Play()
+    end)
+    
+    button.MouseLeave:Connect(function()
+        normalTween:Play()
+    end)
+    
+    button.MouseButton1Click:Connect(action)
+    button.Parent = parent
+    
+    return button
+end
+
+-- Troll page buttons
+createButton("Set Skybox", trollPage, function()
+    game:GetService("Lighting").Sky.SkyboxBk = "rbxasset://textures/sky/sky512_bk.tex"
+    print("Skybox changed! (c00lkidd style would spam a decal here)")
+end)
+
+createButton("Decal Spam", trollPage, function()
+    local part = Instance.new("Part")
+    part.Size = Vector3.new(4, 1, 4)
+    part.Position = player.Character and player.Character.HumanoidRootPart and player.Character.HumanoidRootPart.Position + Vector3.new(0, 10, 0) or Vector3.new(0, 10, 0)
+    part.Parent = workspace
+    local decal = Instance.new("Decal")
+    decal.Texture = "rbxassetid://0"
+    decal.Face = Enum.NormalId.Top
+    decal.Parent = part
+    print("Decal spawned! (Original would spam many)")
+end)
+
+createButton("Apoc Troll", trollPage, function()
+    local flash = Instance.new("Frame")
+    flash.Size = UDim2.new(1, 0, 1, 0)
+    flash.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    flash.BackgroundTransparency = 1
+    flash.Parent = screenGui
+    
+    local tween = TweenService:Create(flash, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {BackgroundTransparency = 0.5})
+    tween:Play()
+    tween.Completed:Connect(function()
+        TweenService:Create(flash, TweenInfo.new(0.5), {BackgroundTransparency = 1}):Play()
+        wait(0.5)
+        flash:Destroy()
+    end)
+    print("Apoc flash! (c00lkidd would crash the server)")
+end)
+
+createButton("Close GUI", trollPage, function()
+    screenGui:Destroy()
+end)
+
+-- Destruction page buttons
+createButton("Flood", destructionPage, function()
+    for i = 1, 5 do
+        local water = Instance.new("Part")
+        water.Size = Vector3.new(10, 1, 10)
+        water.Position = Vector3.new(i * 10, 0, 0)
+        water.BrickColor = BrickColor.new("Bright blue")
+        water.Material = Enum.Material.ForceField
+        water.Parent = workspace
+    end
+    print("Flood initiated! (c00lkidd would flood the entire terrain)")
+end)
+
+createButton("Kill All", destructionPage, function()
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        player.Character.Humanoid.Health = 0
+    end
+    print("Self-kill! (Original targeted everyone—don't do that!)")
+end)
+
+createButton("Clear Workspace", destructionPage, function()
+    if workspace:FindFirstChild("TestPart") then
+        workspace.TestPart:Destroy()
+    end
+    print("Workspace cleared of test items!")
+end)
+
+createButton("Close GUI", destructionPage, function()
+    screenGui:Destroy()
+end)
+
+-- Navigation buttons
+local function createNavButton(text, action)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0.5, -5, 0, 30)
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.Text = text
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextScaled = true
+    button.Font = Enum.Font.SourceSans
+    button.BorderSizePixel = 0
+    
+    local hoverTween = TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 0, 0)})
+    local normalTween = TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)})
+    
+    button.MouseEnter:Connect(function()
+        hoverTween:Play()
+    end)
+    
+    button.MouseLeave:Connect(function()
+        normalTween:Play()
+    end)
+    
+    button.MouseButton1Click:Connect(action)
+    button.Parent = navFrame
+end
+
+createNavButton("Troll", function()
+    trollPage.Visible = true
+    destructionPage.Visible = false
+end)
+
+createNavButton("Destruction", function()
+    trollPage.Visible = false
+    destructionPage.Visible = true
+end)
+
+-- Animate in (slide from bottom right)
+mainFrame.Position = UDim2.new(1, -310, 1, 410) -- Start off-screen
+local slideIn = TweenService:Create(mainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(1, -310, 1, 10)})
+slideIn:Play()
+
+print("c00lkidd GUI loaded in bottom right with Troll and Destruction pages for PC!")
