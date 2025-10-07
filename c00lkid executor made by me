@@ -1,0 +1,136 @@
+-- CoolKidd GUI Implementation in Lua with Code Execution
+-- Assuming a Roblox-compatible GUI library (e.g., Synapse X or similar)
+
+local GUI = Instance.new("ScreenGui")
+GUI.Name = "CoolKiddGUI"
+GUI.Parent = game:GetService("CoreGui") -- Place in CoreGui for exploit-level access
+
+-- Main Frame
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 400, 0, 300)
+Frame.Position = UDim2.new(0.5, -200, 0.5, -150) -- Center on screen
+Frame.BackgroundColor3 = Color3.fromRGB(5, 0, 0) -- Dark background
+Frame.BorderSizePixel = 0
+Frame.Active = true -- Enable dragging
+Frame.Draggable = true
+Frame.Parent = GUI
+
+-- Title Bar
+local TitleBar = Instance.new("Frame")
+TitleBar.Size = UDim2.new(1, 0, 0, 30)
+TitleBar.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Darker title bar
+TitleBar.BorderSizePixel = 0
+TitleBar.Parent = Frame
+
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Size = UDim2.new(1, -10, 1, 0)
+TitleLabel.Position = UDim2.new(0, 5, 0, 0)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Text = "CoolKidd GUI"
+TitleLabel.TextColor3 = Color3.fromRGB(255, 0, 0) -- red text
+TitleLabel.TextSize = 18
+TitleLabel.Font = Enum.Font.Code
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+TitleLabel.Parent = TitleBar
+
+-- Close Button
+local CloseButton = Instance.new("TextButton")
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -30, 0, 0)
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50) -- Red close button
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.TextSize = 14
+CloseButton.Font = Enum.Font.Code
+CloseButton.Parent = TitleBar
+CloseButton.MouseButton1Click:Connect(function()
+    GUI:Destroy() -- Close GUI
+end)
+
+-- Command Input
+local TextBox = Instance.new("TextBox")
+TextBox.Size = UDim2.new(0.9, 0, 0, 30)
+TextBox.Position = UDim2.new(0.05, 0, 0.15, 0)
+TextBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.PlaceholderText = "Enter command..."
+TextBox.TextSize = 14
+TextBox.Font = Enum.Font.Code
+TextBox.TextXAlignment = Enum.TextXAlignment.Left
+TextBox.Parent = Frame
+
+-- Execute Button
+local ExecuteButton = Instance.new("TextButton")
+ExecuteButton.Size = UDim2.new(0.45, 0, 0, 30)
+ExecuteButton.Position = UDim2.new(0.05, 0, 0.3, 0)
+ExecuteButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Red
+ExecuteButton.Text = "Execute"
+ExecuteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ExecuteButton.TextSize = 14
+ExecuteButton.Font = Enum.Font.Code
+ExecuteButton.Parent = Frame
+ExecuteButton.MouseButton1Click:Connect(function()
+    local command = TextBox.Text
+    if command == "" then
+        OutputLabel.Text = "Output: No command entered"
+        return
+    end
+    local success, result = pcall(function()
+        local func = loadstring(command)
+        if func then
+            return func()
+        else
+            return "Error: Invalid Lua code"
+        end
+    end)
+    if success then
+        OutputLabel.Text = "Output: Success" .. (result and " - " .. tostring(result) or "")
+    else
+        OutputLabel.Text = "Output: Error - " .. tostring(result)
+    end
+end)
+
+-- Clear Button
+local ClearButton = Instance.new("TextButton")
+ClearButton.Size = UDim2.new(0.45, 0, 0, 30)
+ClearButton.Position = UDim2.new(0.5, 0, 0.3, 0)
+ClearButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50) -- Red
+ClearButton.Text = "Clear"
+ClearButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ClearButton.TextSize = 14
+ClearButton.Font = Enum.Font.Code
+ClearButton.Parent = Frame
+ClearButton.MouseButton1Click:Connect(function()
+    TextBox.Text = ""
+    OutputLabel.Text = "Output: Ready"
+end)
+
+-- Output Label
+local OutputLabel = Instance.new("TextLabel")
+OutputLabel.Size = UDim2.new(0.9, 0, 0.5, 0)
+OutputLabel.Position = UDim2.new(0.05, 0, 0.45, 0)
+OutputLabel.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+OutputLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+OutputLabel.Text = "Output: Ready"
+OutputLabel.TextSize = 14
+OutputLabel.Font = Enum.Font.Code
+OutputLabel.TextXAlignment = Enum.TextXAlignment.Left
+OutputLabel.TextYAlignment = Enum.TextYAlignment.Top
+OutputLabel.Parent = Frame
+
+-- Frame
+local Shadow = Instance.new("Frame")
+Frame.Size = UDim2.new(0.3, 7, 0.3, 7)
+Frame.Position = UDim2.new(0, -5, 0, -5)
+Frame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+Frame.BackgroundTransparency = 0.5
+Frame.BorderSizePixel = 0
+Frame.ZIndex = -1
+Frame.Parent = Frame
+
+-- Basic Animation (fade in)
+Frame.BackgroundTransparency = 1
+for i = 1, 0, -0.05 do
+    Frame.BackgroundTransparency = i
+    wait(0.01)
+end
