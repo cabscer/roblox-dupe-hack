@@ -1,0 +1,87 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+public class FastGTagGUI : MonoBehaviour
+{
+    public KeyCode toggleKey = KeyCode.JoystickButton0;
+
+    GameObject canvasObj;
+    GameObject panelObj;
+
+    void Start()
+    {
+        // Canvas
+        canvasObj = new GameObject("FastGUI");
+        Canvas canvas = canvasObj.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.WorldSpace;
+
+        CanvasScaler scaler = canvasObj.AddComponent<CanvasScaler>();
+        scaler.dynamicPixelsPerUnit = 10f;
+
+        canvasObj.AddComponent<GraphicRaycaster>();
+
+        canvasObj.transform.SetParent(transform);
+        canvasObj.transform.localPosition = new Vector3(0, 0, 0.6f);
+        canvasObj.transform.localScale = Vector3.one * 0.002f;
+
+        // Panel
+        panelObj = new GameObject("Panel");
+        panelObj.transform.SetParent(canvasObj.transform);
+        Image panelImage = panelObj.AddComponent<Image>();
+        panelImage.color = new Color(0, 0, 0, 0.85f);
+
+        RectTransform panelRect = panelObj.GetComponent<RectTransform>();
+        panelRect.sizeDelta = new Vector2(400, 500);
+
+        // Button
+        CreateButton("Test Button", new Vector2(0, 100), () =>
+        {
+            Debug.Log("Button pressed");
+        });
+
+        // Close Button
+        CreateButton("Close", new Vector2(0, -150), () =>
+        {
+            panelObj.SetActive(false);
+        });
+
+        panelObj.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(toggleKey))
+        {
+            panelObj.SetActive(!panelObj.activeSelf);
+        }
+    }
+
+    void CreateButton(string text, Vector2 position, UnityEngine.Events.UnityAction action)
+    {
+        GameObject btnObj = new GameObject(text);
+        btnObj.transform.SetParent(panelObj.transform);
+
+        Image img = btnObj.AddComponent<Image>();
+        img.color = Color.white;
+
+        Button btn = btnObj.AddComponent<Button>();
+        btn.onClick.AddListener(action);
+
+        RectTransform rect = btnObj.GetComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(280, 70);
+        rect.anchoredPosition = position;
+
+        GameObject txtObj = new GameObject("Text");
+        txtObj.transform.SetParent(btnObj.transform);
+
+        Text txt = txtObj.AddComponent<Text>();
+        txt.text = text;
+        txt.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        txt.alignment = TextAnchor.MiddleCenter;
+        txt.color = Color.black;
+
+        RectTransform txtRect = txt.GetComponent<RectTransform>();
+        txtRect.sizeDelta = rect.sizeDelta;
+        txtRect.localPosition = Vector3.zero;
+    }
+}
